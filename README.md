@@ -18,3 +18,7 @@ Windows version of philips_to_ismrmrd intended for use on Philips MRI scanners
 * `philips_to_ismrmrd.pl` uses debug flag to produce `_raw.xml` and `_processed.xml` outputs
 * Information in `_raw.xml` can be used to create a custom version of the XML stylesheet `IsmrmrdPhilips.xsl`
 * The `IsmrmrdPhilips.xsl` file used by `philips_to_ismrmrd.pl` is located at the installation location, e.g. `G:\Site\ClinicalScience\philips_to_ismrmrd\philips_to_ismrmrd_exe`
+
+# SEE ALSO
+* [https://github.com/ismrmrd/ismrmrd](https://github.com/ismrmrd/ismrmrd)
+* [https://github.com/ismrmrd/philips_to_ismrmrd](https://github.com/ismrmrd/philips_to_ismrmrd)
