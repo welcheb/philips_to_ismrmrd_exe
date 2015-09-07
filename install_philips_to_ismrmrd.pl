@@ -8,7 +8,8 @@ use Cwd;
 #-----------------------------------------------------------------------------
 $site_clinical_science_directory = "ClinicalScience";
 $site_philips_to_ismrmrd_directory = "philips_to_ismrmrd";
-@subdirs_to_copy = ('philips_to_ismrmrd_exe');
+@subdirs_to_copy = ('philips_to_ismrmrd_exe','SendTo Shortcuts');
+@user_accounts = ('mrservice','gyrotest');
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -81,7 +82,9 @@ if( uc($install_src_path) eq uc($install_dst_path) )
     print "  Only modification to system PATH environment variable will be applied (if necessary).\n\n";
 
 	&add_path_to_philips_to_ismrmrd("$install_dst_path/philips_to_ismrmrd_exe/");
-	    
+	
+    &install_sendto_shortcuts;
+    
     print "\n  INSTALLATION COMPLETE.\n";
     &press_any_key;
     exit();
@@ -136,6 +139,12 @@ for(@subdirs_to_copy)
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
+# INSTALL SENDTO SHORTCUTS
+#-----------------------------------------------------------------------------
+&install_sendto_shortcuts;
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # UPDATE PATH
 #-----------------------------------------------------------------------------
 &add_path_to_philips_to_ismrmrd("$install_dst_path/philips_to_ismrmrd_exe/");
@@ -144,6 +153,8 @@ for(@subdirs_to_copy)
 #-----------------------------------------------------------------------------
 # EXIT
 #-----------------------------------------------------------------------------
+print "\n  INSTALLATION COMPLETE.\n";
+&press_any_key;
 exit();
 #-----------------------------------------------------------------------------
 
@@ -279,5 +290,21 @@ sub add_path_to_philips_to_ismrmrd($)
 		system($reg_add_command);
 		print "\n*** Changes to System PATH will not fully take effect until the system is rebooted. ***\n\n";
 	}
+}
+
+sub install_sendto_shortcuts
+{
+    my $sendto_parent_folder_name = "LABRAWSIN File(s) & Folders(s)";    
+
+    # INSTALL SENDTO SHORTCUTS
+    foreach(@user_accounts)
+    {
+        my $sendto_path = "C:/Users/$_/AppData/Roaming/Microsoft/Windows/SendTo";
+        if(-d $sendto_path)
+        {   
+            print "  Installing shortcuts into place for user $_.\n\n";
+            &copy_files("$install_dst_path/SendTo Shortcuts/$sendto_parent_folder_name", $sendto_path);
+        }
+    }
 }
 #-----------------------------------------------------------------------------

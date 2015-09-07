@@ -1,0 +1,1 @@
+"G:/Site/ClinicalScience/philips_to_ismrmrd/philips_to_ismrmrd_exe/philips_to_ismrmrd.pl" %*

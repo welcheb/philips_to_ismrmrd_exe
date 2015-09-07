@@ -1,6 +1,7 @@
 #!/Apps_32/perl/bin/perl -w
 
 use File::Basename;
+use File::Glob qw(:globally :nocase);
 
 #-----------------------------------------------------------------------------
 # PERL script wrapper for philips_to_ismrmrd.exe
@@ -24,15 +25,38 @@ $arg_debug = "1";
 #-----------------------------------------------------------------------------
 # PROCESS INPUTS
 #-----------------------------------------------------------------------------
-$nr_inputs = 0;
-@inputs = ();
+my $nr_files = 0;
+my @inputs = ();
 for($k=0;$k<=$#ARGV;$k++)
 {
-  $inputs[$nr_inputs] = $ARGV[$k];
-  $nr_inputs++;
+  if(-d $ARGV[$k]) # input is a directory
+  {
+    my $sin_folder = $ARGV[$k];
+    $sin_folder =~ s/\//\\/g; # replace forward slashes with backward slashes
+    my @sinfiles = <$sin_folder\\*.SIN>;
+    foreach $sinfile (@sinfiles)
+    {
+        if(-f $sinfile)
+        {
+            print "Found $sinfile\n";
+            $inputs[$nr_files] = $sinfile;
+            $nr_files++;
+        }
+    }
+    
+  }
+  else
+  {
+    if(-f $ARGV[$k])
+    {
+        print "Found $ARGV[$k]\n";
+        $inputs[$nr_files] = $ARGV[$k];
+        $nr_files++;
+    }
+  }
 }
 
-if($nr_inputs<1)
+if($nr_files<1)
 {
 	print "USAGE: philips_to_ismrmrd.pl labrawsin_filename1 [labrawsin_filename2] ... [labrawsin_filenameN]";
 }
@@ -62,7 +86,7 @@ else
 		# so make sure output output_file_fullname does not exist	
 		my $output_file_fullname = "\"$input_path\\$input_name.h5\"";
 		#print  "output_file_fullname = $output_file_fullname\n";
-		my $system_output = `del $output_file_fullname`;
+		my $system_output = `del $output_file_fullname 2>nul`;
 
 		# call philips_to_ismrmrd.exe
 		system("philips_to_ismrmrd.exe --debug $arg_debug --pMapStyle \"$arg_pMapStyle\" -o $output_file_fullname -f \"$input_path\\$input_name\"");
